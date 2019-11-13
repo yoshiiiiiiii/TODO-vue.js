@@ -1,0 +1,78 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <title>TODOリスト</title>
+    <!-- スタイルシート -->
+    <link rel="stylesheet" type="text/css" href="/views/css/plan.css">
+
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js" defer></script>
+
+    <!-- axios：HTTP通信を超簡単に行うことができるJavaScriptライブラリ -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js" defer></script>
+
+    <!-- Vueインスタンス -->
+    <script src="/views/js/vuePlan.js" defer></script>
+</head>
+<body>
+<div id="app">
+    <h1>TODOリスト</h1>
+
+    <!-- 検索条件 -->
+    <label v-for="label in options">
+        <input type="radio" v-model="current" v-bind:value="label.value">{{ label.label }}
+    </label>
+    <p>予定　：<input type="text" name='planName' v-model="planName" v-bind:class="{'alert-color': !validate }" value='' size="40" placeholder="予定名を入力してください※必須"></p>
+    <p>工数　：<input type="text" name='planCost' v-model="planCost" value='' size="10"></p>
+    <p>優先度：
+        <select name='planPriority' v-model="planPriority">
+            <option v-for="option in prioritys" v-bind:value="option.value">
+                {{ option.label }}
+            </option>
+        </select>
+    </p>
+    <p>メモ　：<input type="text" name='planMemo' v-model="planMemo" value='' size="40"></p>
+
+    <!-- 追加ボタン -->
+    <button v-on:click="doAddPlan" v-bind:disabled="!isEntered">
+        追加
+    </button>
+    <hr>
+    <table>
+        <!-- テーブルヘッダー -->
+        <thead v-pre>
+        <tr>
+            <th class="index">No</th>
+            <th class="name">予定</th>
+            <th class="cost">工数</th>
+            <th class="priority">優先度</th>
+            <th class="memo">メモ</th>
+            <th class="state">状態</th>
+            <th class="delete">削除</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(item, index) in computedPlans">
+            <td class="index">{{ index + 1 }}</td>
+            <td class="name">{{ item.name }}</td>
+            <td class="cost">{{ item.Cost }}</td>
+            <td class="priority">{{ item.Priority }}</td>
+            <td class="memo">{{ item.memo }}</td>
+            <td class="state">
+                <!-- 状態変更ボタン -->
+                <button v-on:click="doChangePlanState(item)">
+                    {{ labels[item.state] }}
+                </button>
+            </td>
+            <td class="delete">
+                <!-- 削除ボタン -->
+                <button v-on:click="doDeletePlan(item)">
+                    削除
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
